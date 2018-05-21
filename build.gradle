@@ -43,6 +43,7 @@ repositories {
 dependencies {
     compile group: 'org.springframework', name: 'spring-framework-bom', version: '5.0.5.RELEASE', ext: 'pom'
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compile('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
@@ -51,4 +52,5 @@ dependencies {
     runtime('org.springframework.boot:spring-boot-devtools')
     compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('io.projectreactor:reactor-test')
 }
