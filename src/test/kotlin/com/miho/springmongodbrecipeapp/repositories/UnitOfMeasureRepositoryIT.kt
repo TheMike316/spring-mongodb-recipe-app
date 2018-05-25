@@ -20,8 +20,6 @@ class UnitOfMeasureRepositoryIT {
 
         assertNotEquals(null, repository)
 
-        val all = repository.findAll()
-
         val unit = repository.findByUnit("Teaspoon")
 
         assertEquals("Teaspoon", unit?.unit)

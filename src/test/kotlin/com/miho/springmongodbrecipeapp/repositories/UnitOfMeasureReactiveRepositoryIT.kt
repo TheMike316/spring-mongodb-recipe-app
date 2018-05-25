@@ -3,7 +3,7 @@ package com.miho.springmongodbrecipeapp.repositories
 import com.miho.springmongodbrecipeapp.domain.UnitOfMeasure
 import com.miho.springmongodbrecipeapp.repositories.reactive.UnitOfMeasureReactiveRepository
 import com.miho.springmongodbrecipeapp.testutils.TestDataHelper
-import junit.framework.Assert.*
+import junit.framework.TestCase.*
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +31,8 @@ class UnitOfMeasureReactiveRepositoryIT {
         val count = unitOfMeasureReactiveRepository.findAll()
                 .count()
                 .block()
+
+        assertTrue(count == 9L)
     }
 
     @Test
