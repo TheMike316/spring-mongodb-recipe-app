@@ -32,7 +32,7 @@ class UnitOfMeasureReactiveRepositoryIT {
                 .count()
                 .block()
 
-        assertTrue(count == 9L)
+        assertEquals(9L, count)
     }
 
     @Test
@@ -42,7 +42,7 @@ class UnitOfMeasureReactiveRepositoryIT {
                 .count()
                 .block()
 
-        assertEquals(count, 3L)
+        assertEquals(3L, count)
     }
 
     @Test
@@ -63,5 +63,18 @@ class UnitOfMeasureReactiveRepositoryIT {
         val uomsAfterBlock = unitOfMeasureReactiveRepository.findAll().toIterable()
 
         assertTrue(uomsAfterBlock.map { it.unit }.contains(newUom.unit))
+    }
+
+    @Test
+    fun testDeleteAll() {
+        val countBefore = unitOfMeasureReactiveRepository.findAll().count().block()
+
+        val deleteMono = unitOfMeasureReactiveRepository.deleteAll()
+
+        assertEquals(countBefore, unitOfMeasureReactiveRepository.findAll().count().block())
+
+        deleteMono.block()
+
+        assertEquals(0L, unitOfMeasureReactiveRepository.findAll().count().block())
     }
 }

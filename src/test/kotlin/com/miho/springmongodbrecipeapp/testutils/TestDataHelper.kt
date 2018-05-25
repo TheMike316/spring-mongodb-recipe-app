@@ -3,7 +3,6 @@ package com.miho.springmongodbrecipeapp.testutils
 import com.miho.springmongodbrecipeapp.bootstrap.RecipeDataBootstrap
 import com.miho.springmongodbrecipeapp.repositories.reactive.CategoryReactiveRepository
 import com.miho.springmongodbrecipeapp.repositories.reactive.UnitOfMeasureReactiveRepository
-import org.junit.Test
 import org.springframework.stereotype.Component
 import org.springframework.test.util.ReflectionTestUtils
 
@@ -22,25 +21,5 @@ class TestDataHelper(private val recipeDataBootstrap: RecipeDataBootstrap,
         categoryReactiveRepository.deleteAll().block()
 
         ReflectionTestUtils.invokeMethod<Unit>(recipeDataBootstrap, "loadCategories")
-    }
-
-    @Test
-    fun testFindAll() {
-
-    }
-
-    @Test
-    fun testInsert() {
-
-    }
-
-    @Test
-    fun testDelete() {
-
-    }
-
-    @Test
-    fun testDeleteAll() {
-
     }
 }

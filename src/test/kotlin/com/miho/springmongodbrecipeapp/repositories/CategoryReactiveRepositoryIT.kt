@@ -2,7 +2,9 @@ package com.miho.springmongodbrecipeapp.repositories
 
 import com.miho.springmongodbrecipeapp.repositories.reactive.CategoryReactiveRepository
 import com.miho.springmongodbrecipeapp.testutils.TestDataHelper
+import junit.framework.TestCase.assertEquals
 import org.junit.After
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -23,7 +25,12 @@ class CategoryReactiveRepositoryIT {
         testDataHelper.resetCategories()
     }
 
-//    @Test
-//    fun test
-//    fun test
+    @Test
+    fun testFindAll() {
+        val count = categoryReactiveRepository.findAll()
+                .count()
+                .block()
+
+        assertEquals(5, count)
+    }
 }
