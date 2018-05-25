@@ -20,7 +20,7 @@ class IngredientServiceIT {
     private companion object {
         const val NEW_DESCRIPTION = "new ingredient description"
     }
-    
+
     @Autowired
     private lateinit var recipeRepository: RecipeRepository
 
@@ -77,7 +77,7 @@ class IngredientServiceIT {
     fun testNewIngredient() {
 
 //		given
-        val uom = uomService.listAllUoms().iterator().next()
+        val uom = uomService.listAllUoms().blockFirst()
         val recipe = recipeService.getAllRecipes().iterator().next()
         val newIngredientCommand = IngredientCommand(description = "new ingredient", unitOfMeasure = uom, amount = BigDecimal.ONE)
 

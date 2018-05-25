@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import reactor.core.publisher.Flux
 import java.math.BigDecimal
 import org.mockito.Mockito.`when` as mockitoWhen
 
@@ -83,11 +84,10 @@ class IngredientControllerTest {
     fun testGetUpdateForm() {
 //		given
         val ingredientCommand = IngredientCommand(id = "3")
-        val uoms = setOf(UnitOfMeasureCommand(id = "1"), UnitOfMeasureCommand(id = "2"), UnitOfMeasureCommand(id = "3"))
 
 //		when
         mockitoWhen(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(ingredientCommand)
-        mockitoWhen(uomService.listAllUoms()).thenReturn(uoms)
+        mockitoWhen(uomService.listAllUoms()).thenReturn(Flux.just(UnitOfMeasureCommand(id = "1"), UnitOfMeasureCommand(id = "2"), UnitOfMeasureCommand(id = "3")))
 
 //		then
         mockMvc.perform(get("/recipe/2/ingredient/3/update"))
@@ -130,7 +130,7 @@ class IngredientControllerTest {
 
 //		when
         mockitoWhen(recipeService.findById(anyString())).thenReturn(recipeCommand)
-        mockitoWhen(uomService.listAllUoms()).thenReturn(emptySet())
+        mockitoWhen(uomService.listAllUoms()).thenReturn(Flux.empty())
 
 //		then
         mockMvc.perform(get("/recipe/1/ingredient/new"))
