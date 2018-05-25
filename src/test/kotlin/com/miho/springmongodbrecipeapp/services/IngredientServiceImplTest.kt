@@ -6,7 +6,7 @@ import com.miho.springmongodbrecipeapp.converters.UnitOfMeasureCommandToUnitOfMe
 import com.miho.springmongodbrecipeapp.converters.UnitOfMeasureToUnitOfMeasureCommand
 import com.miho.springmongodbrecipeapp.domain.Ingredient
 import com.miho.springmongodbrecipeapp.domain.Recipe
-import com.miho.springmongodbrecipeapp.repositories.RecipeRepository
+import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +16,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import java.util.*
+import reactor.core.publisher.Mono
 import org.mockito.Mockito.`when` as mockitoWhen
 
 class IngredientServiceImplTest {
@@ -25,7 +25,7 @@ class IngredientServiceImplTest {
 
 
     @Mock
-    private lateinit var recipeRepository: RecipeRepository
+    private lateinit var recipeRepository: RecipeReactiveRepository
 
 
     @Before
@@ -58,13 +58,13 @@ class IngredientServiceImplTest {
         recipe.addIngredients(listOf(ingredient1, ingredient2, ingredient3))
 
 
-        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe))
+        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe))
 
 //      when		
-        val ingredientCommand = ingredientService.findByRecipeIdAndIngredientId("1", "2")
+        val ingredientCommand = ingredientService.findByRecipeIdAndIngredientId("1", "2").block()!!
 
 //		then
-        assertEquals("2", ingredientCommand?.id)
+        assertEquals("2", ingredientCommand.id)
         verify(recipeRepository, times(1)).findById(anyString())
     }
 
@@ -76,7 +76,7 @@ class IngredientServiceImplTest {
         val recipe = Recipe(id = "1", ingredients = mutableSetOf(ingredient))
 
 //	 	when
-        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe))
+        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe))
         ingredientService.deleteById(recipe.id, ingredient.id)
 
 //		then
@@ -91,7 +91,7 @@ class IngredientServiceImplTest {
         val ingredientId = "2"
 
 //	 	when
-        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe))
+        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe))
         ingredientService.deleteById(recipe.id, ingredientId)
 
 //		then expected exception is thrown

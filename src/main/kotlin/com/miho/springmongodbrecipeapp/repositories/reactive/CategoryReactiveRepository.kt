@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono
 
 interface CategoryReactiveRepository : ReactiveMongoRepository<Category, String> {
 
-    fun findByDescription(description: String): Mono<Category?>
+    fun findByDescription(description: String): Mono<Category>
 }

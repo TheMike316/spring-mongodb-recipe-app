@@ -51,7 +51,7 @@ class IngredientServiceIT {
 
 //		when
         ingredientCommand?.description = NEW_DESCRIPTION
-        val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(ingredientCommand!!, recipe.id)
+        val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(ingredientCommand!!, recipe.id).block()!!
         val recipeCommandAfterUpdate = recipeService.findById(recipe.id)
 
         //		then
@@ -82,7 +82,7 @@ class IngredientServiceIT {
         val newIngredientCommand = IngredientCommand(description = "new ingredient", unitOfMeasure = uom, amount = BigDecimal.ONE)
 
 //		when
-        val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(newIngredientCommand, recipe.id)
+        val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(newIngredientCommand, recipe.id).block()!!
         val recipeCommand = recipeService.findById(recipe.id)
 
 
@@ -112,7 +112,7 @@ class IngredientServiceIT {
         var deletedIngredient: IngredientCommand? = null
 
         try {
-            deletedIngredient = ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId)
+            deletedIngredient = ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId).block()
         } catch (e: RuntimeException) {
 //			do nothing
         }

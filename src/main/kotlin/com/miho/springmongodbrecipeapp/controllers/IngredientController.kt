@@ -61,7 +61,8 @@ class IngredientController(private val recipeService: RecipeService,
     @PostMapping("/{recipeId}/ingredient")
     fun saveOrUpdate(@ModelAttribute ingredient: IngredientCommand, @PathVariable recipeId: String): String {
 
-        val savedIngredient = ingredientService.saveOrUpdateIngredient(ingredient, recipeId)
+        //TODO refactor thymeleaf templates to enable end-to-end reactive process
+        val savedIngredient = ingredientService.saveOrUpdateIngredient(ingredient, recipeId).block()!!
 
         return "redirect:/recipe/$recipeId/ingredient/${savedIngredient.id}/show"
 

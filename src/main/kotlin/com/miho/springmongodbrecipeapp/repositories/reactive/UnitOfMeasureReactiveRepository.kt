@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono
 
 interface UnitOfMeasureReactiveRepository : ReactiveMongoRepository<UnitOfMeasure, String> {
 
-    fun findByUnit(unit: String): Mono<UnitOfMeasure?>
+    fun findByUnit(unit: String): Mono<UnitOfMeasure>
 }
 
