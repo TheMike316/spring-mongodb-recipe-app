@@ -76,4 +76,14 @@ class CategoryReactiveRepositoryIT {
 
         assertEquals(0L, categoryReactiveRepository.findAll().count().block()!!)
     }
+
+    @Test
+    fun testFindbyDescription() {
+        val mexicanCategory = "Mexican"
+
+        val category = categoryReactiveRepository.findByDescription(mexicanCategory).block()
+
+        assertTrue(category != null)
+        assertEquals(mexicanCategory, category!!.description)
+    }
 }

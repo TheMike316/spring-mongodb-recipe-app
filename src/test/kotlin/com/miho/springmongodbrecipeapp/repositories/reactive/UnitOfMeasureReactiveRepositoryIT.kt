@@ -77,4 +77,14 @@ class UnitOfMeasureReactiveRepositoryIT {
 
         assertEquals(0L, unitOfMeasureReactiveRepository.findAll().count().block()!!)
     }
+
+    @Test
+    fun testFindByUnit() {
+        val unit = "Dash"
+
+        val uom = unitOfMeasureReactiveRepository.findByUnit(unit).block()
+
+        assertTrue(uom != null)
+        assertEquals(unit, uom!!.unit)
+    }
 }
