@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Repository
 
+//TODO use ReactiveMongoOperations
 @Repository
 class IdSequenceRepositoryImpl(val mongoOperations: MongoOperations) : IdSequenceRepository {
-
 
     override fun getNextId(sequenceKey: String): String {
         //get sequence id
@@ -37,5 +37,9 @@ class IdSequenceRepositoryImpl(val mongoOperations: MongoOperations) : IdSequenc
 
     override fun save(idSequence: IdSequence) {
         mongoOperations.insert(idSequence)
+    }
+
+    override fun resetSequences() {
+        mongoOperations.dropCollection(IdSequence::class.java)
     }
 }

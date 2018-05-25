@@ -1,6 +1,7 @@
 package com.miho.springmongodbrecipeapp.testutils
 
 import com.miho.springmongodbrecipeapp.bootstrap.RecipeDataBootstrap
+import com.miho.springmongodbrecipeapp.repositories.IdSequenceRepository
 import com.miho.springmongodbrecipeapp.repositories.reactive.CategoryReactiveRepository
 import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import com.miho.springmongodbrecipeapp.repositories.reactive.UnitOfMeasureReactiveRepository
@@ -11,7 +12,8 @@ import org.springframework.test.util.ReflectionTestUtils
 class TestDataHelper(private val recipeDataBootstrap: RecipeDataBootstrap,
                      private val unitOfMeasureReactiveRepository: UnitOfMeasureReactiveRepository,
                      private val categoryReactiveRepository: CategoryReactiveRepository,
-                     private val recipeReactiveRepository: RecipeReactiveRepository) {
+                     private val recipeReactiveRepository: RecipeReactiveRepository,
+                     private val idSequenceRepository: IdSequenceRepository) {
 
     fun resetUnitOfMeasures() {
         unitOfMeasureReactiveRepository.deleteAll().block()
@@ -28,7 +30,10 @@ class TestDataHelper(private val recipeDataBootstrap: RecipeDataBootstrap,
     fun resetRecipeData() {
         unitOfMeasureReactiveRepository.deleteAll()
                 .and(categoryReactiveRepository.deleteAll())
-                .and(recipeReactiveRepository.deleteAll()).block()
+                .and(recipeReactiveRepository.deleteAll())
+                .block()
+
+        idSequenceRepository.resetSequences()
 
         recipeDataBootstrap.afterPropertiesSet()
     }

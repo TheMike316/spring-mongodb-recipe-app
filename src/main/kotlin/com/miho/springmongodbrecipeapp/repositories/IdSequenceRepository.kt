@@ -8,4 +8,6 @@ interface IdSequenceRepository {
 
     fun save(idSequence: IdSequence)
 
+    fun resetSequences()
+
 }
