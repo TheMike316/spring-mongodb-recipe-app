@@ -93,7 +93,7 @@ class IngredientServiceIT {
         assertEquals(savedIngredientCommand.description, newIngredientCommand.description)
         assertEquals(savedIngredientCommand.unitOfMeasure, newIngredientCommand.unitOfMeasure)
         assertEquals(savedIngredientCommand.amount, newIngredientCommand.amount)
-        assert(recipeCommand.ingredients.indexOf(savedIngredientCommand) != -1)
+        assert(recipeCommand.ingredients.map { it.id }.contains(savedIngredientCommand.id))
     }
 
 
@@ -107,7 +107,7 @@ class IngredientServiceIT {
         val ingredientId = ingredient.id
 
 //		when
-        ingredientService.deleteById(recipeId, ingredientId)
+        ingredientService.deleteById(recipeId, ingredientId).block()
 
         var deletedIngredient: IngredientCommand? = null
 

@@ -77,7 +77,8 @@ class IngredientServiceImplTest {
 
 //	 	when
         mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe))
-        ingredientService.deleteById(recipe.id, ingredient.id)
+        mockitoWhen(recipeRepository.save(any(Recipe::class.java))).thenReturn(Mono.just(recipe))
+        ingredientService.deleteById(recipe.id, ingredient.id).block()
 
 //		then
         verify(recipeRepository, times(1)).findById(anyString())
@@ -92,7 +93,7 @@ class IngredientServiceImplTest {
 
 //	 	when
         mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe))
-        ingredientService.deleteById(recipe.id, ingredientId)
+        ingredientService.deleteById(recipe.id, ingredientId).block()
 
 //		then expected exception is thrown
     }
