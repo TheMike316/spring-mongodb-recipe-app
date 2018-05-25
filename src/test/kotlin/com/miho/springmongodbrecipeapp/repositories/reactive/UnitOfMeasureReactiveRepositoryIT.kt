@@ -1,7 +1,6 @@
-package com.miho.springmongodbrecipeapp.repositories
+package com.miho.springmongodbrecipeapp.repositories.reactive
 
 import com.miho.springmongodbrecipeapp.domain.UnitOfMeasure
-import com.miho.springmongodbrecipeapp.repositories.reactive.UnitOfMeasureReactiveRepository
 import com.miho.springmongodbrecipeapp.testutils.TestDataHelper
 import junit.framework.TestCase.*
 import org.junit.After
