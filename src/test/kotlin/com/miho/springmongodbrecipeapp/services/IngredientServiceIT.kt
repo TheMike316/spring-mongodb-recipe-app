@@ -1,7 +1,6 @@
 package com.miho.springmongodbrecipeapp.services
 
 import com.miho.springmongodbrecipeapp.commands.IngredientCommand
-import com.miho.springmongodbrecipeapp.converters.IngredientCommandToIngredient
 import com.miho.springmongodbrecipeapp.converters.IngredientToIngredientCommand
 import com.miho.springmongodbrecipeapp.converters.RecipeToRecipeCommand
 import com.miho.springmongodbrecipeapp.repositories.RecipeRepository
@@ -18,8 +17,10 @@ import java.math.BigDecimal
 @SpringBootTest
 class IngredientServiceIT {
 
-    private val NEW_DESCRIPTION = "new ingredient description"
-
+    private companion object {
+        const val NEW_DESCRIPTION = "new ingredient description"
+    }
+    
     @Autowired
     private lateinit var recipeRepository: RecipeRepository
 
@@ -31,9 +32,6 @@ class IngredientServiceIT {
 
     @Autowired
     private lateinit var ingredientToCommand: IngredientToIngredientCommand
-
-    @Autowired
-    private lateinit var commandToIngredient: IngredientCommandToIngredient
 
     @Autowired
     private lateinit var recipeToCommand: RecipeToRecipeCommand

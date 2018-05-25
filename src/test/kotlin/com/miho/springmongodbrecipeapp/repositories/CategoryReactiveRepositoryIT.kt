@@ -1,8 +1,9 @@
 package com.miho.springmongodbrecipeapp.repositories
 
+import com.miho.springmongodbrecipeapp.domain.Category
 import com.miho.springmongodbrecipeapp.repositories.reactive.CategoryReactiveRepository
 import com.miho.springmongodbrecipeapp.testutils.TestDataHelper
-import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.*
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +32,49 @@ class CategoryReactiveRepositoryIT {
                 .count()
                 .block()
 
-        assertEquals(5, count)
+        assertEquals(5L, count)
+    }
+
+    @Test
+    fun testFindAllFilter() {
+        val count = categoryReactiveRepository.findAll()
+                .filter { it.description == "American" }
+                .count()
+                .block()
+
+        assertEquals(1L, count)
+    }
+
+    @Test
+    fun testInsert() {
+        val categoriesBefore = categoryReactiveRepository.findAll().toIterable()
+
+        val newCategory = Category(description = "asdfffffffffffasdfasdf")
+
+        val insertMono = categoryReactiveRepository.insert(newCategory)
+
+        val categoriesBeforeBlock = categoryReactiveRepository.findAll().toIterable()
+
+        assertFalse(categoriesBeforeBlock.map { it.description }.contains(newCategory.description))
+        assertTrue(categoriesBefore.count() == categoriesBeforeBlock.count())
+
+        insertMono.block()
+
+        val categoriesAfter = categoryReactiveRepository.findAll().toIterable()
+        assertTrue(categoriesAfter.map { it.description }.contains(newCategory.description))
+    }
+
+    @Test
+    fun testDeleteAll() {
+        val countBefore = categoryReactiveRepository.findAll().count().block()!!
+        assertTrue(countBefore > 0)
+
+        val deleteMono = categoryReactiveRepository.deleteAll()
+
+        assertEquals(countBefore, categoryReactiveRepository.findAll().count().block()!!)
+
+        deleteMono.block()
+
+        assertEquals(0L, categoryReactiveRepository.findAll().count().block()!!)
     }
 }

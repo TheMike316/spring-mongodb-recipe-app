@@ -67,14 +67,15 @@ class UnitOfMeasureReactiveRepositoryIT {
 
     @Test
     fun testDeleteAll() {
-        val countBefore = unitOfMeasureReactiveRepository.findAll().count().block()
+        val countBefore = unitOfMeasureReactiveRepository.findAll().count().block()!!
+        assertTrue(countBefore > 0)
 
         val deleteMono = unitOfMeasureReactiveRepository.deleteAll()
 
-        assertEquals(countBefore, unitOfMeasureReactiveRepository.findAll().count().block())
+        assertEquals(countBefore, unitOfMeasureReactiveRepository.findAll().count().block()!!)
 
         deleteMono.block()
 
-        assertEquals(0L, unitOfMeasureReactiveRepository.findAll().count().block())
+        assertEquals(0L, unitOfMeasureReactiveRepository.findAll().count().block()!!)
     }
 }
