@@ -6,6 +6,7 @@ import com.miho.springmongodbrecipeapp.converters.RecipeToRecipeCommand
 import com.miho.springmongodbrecipeapp.repositories.RecipeRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -123,16 +124,29 @@ class IngredientServiceIT {
 
 
     @Test(expected = RuntimeException::class)
-    fun testDeleteIngredientSadPath() {
+    fun testDeleteIngredientInvalidIngredientId() {
 
 //		given
         val recipe = recipeService.getAllRecipes().iterator().next()
-        val ingredient = recipe.ingredients.iterator().next()
-        val recipeId = recipe.id + 10000
-        val ingredientId = ingredient.id
+        val recipeId = recipe.id
+        val ingredientId = "asdf"
 
 //		when
-        ingredientService.deleteById(recipeId, ingredientId)
+        ingredientService.deleteById(recipeId, ingredientId).block()
+
+//		then an exception is thrown
+    }
+
+    @Ignore //TODO error handling when recipe could not be found
+    @Test(expected = RuntimeException::class)
+    fun testDeleteIngredientInvalidRecipeId() {
+
+//		given
+        val recipeId = "ggggg"
+        val ingredientId = "asdf"
+
+//		when
+        ingredientService.deleteById(recipeId, ingredientId).block()
 
 //		then an exception is thrown
     }

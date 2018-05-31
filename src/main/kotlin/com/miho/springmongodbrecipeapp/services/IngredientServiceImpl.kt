@@ -3,7 +3,6 @@ package com.miho.springmongodbrecipeapp.services
 import com.miho.springmongodbrecipeapp.commands.IngredientCommand
 import com.miho.springmongodbrecipeapp.converters.IngredientCommandToIngredient
 import com.miho.springmongodbrecipeapp.converters.IngredientToIngredientCommand
-import com.miho.springmongodbrecipeapp.domain.Recipe
 import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -20,7 +19,8 @@ class IngredientServiceImpl(private val recipeRepository: RecipeReactiveReposito
     }
 
     override fun saveOrUpdateIngredient(ingredientCommand: IngredientCommand, recipeId: String): Mono<IngredientCommand> {
-        val ingredient = commandToIngredient.convert(ingredientCommand) ?: throw  IllegalArgumentException("ingredient is null")
+        val ingredient = commandToIngredient.convert(ingredientCommand)
+                ?: throw  IllegalArgumentException("ingredient is null")
 
         return recipeRepository.findById(recipeId)
                 .doOnNext {
@@ -32,10 +32,9 @@ class IngredientServiceImpl(private val recipeRepository: RecipeReactiveReposito
                 .map { ingredientToCommand.convert(it) ?: throw RuntimeException("Internal Error!") }
     }
 
+    //TODO error handling when recipe could not be found
     override fun deleteById(recipeId: String, ingredientId: String): Mono<Unit> {
-
         return recipeRepository.findById(recipeId)
-                .ifEmptyThenThrow(RuntimeException("RecipeNotFound"))
                 .doOnNext {
                     if (!it.ingredients.removeIf { i -> i.id == ingredientId })
                         throw RuntimeException("Ingredient was not found")
@@ -45,15 +44,5 @@ class IngredientServiceImpl(private val recipeRepository: RecipeReactiveReposito
                 .thenReturn(Unit)
     }
 
-    fun <T> Mono<T>.ifEmptyThenThrow(e: Throwable): Mono<T> =
-//            this.defaultIfEmpty(null as T)
-//                    .doOnNext {
-//                        if (it == null)
-//                            throw e
-//                    }
-            this.defaultIfEmpty(Recipe(description = "asdfffff") as T)
-                    .doOnNext {
-                        if ((it as Recipe).description == "asdfffff")
-                            throw e
-                    }
+
 }
