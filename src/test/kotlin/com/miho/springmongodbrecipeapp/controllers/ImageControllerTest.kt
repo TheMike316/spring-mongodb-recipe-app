@@ -6,9 +6,10 @@ import com.miho.springmongodbrecipeapp.services.RecipeService
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
-import org.mockito.Mockito.any
+import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Mono
 import org.mockito.Mockito.`when` as mockitoWhen
 
@@ -67,6 +69,8 @@ class ImageControllerTest {
         val file = MockMultipartFile("imagefile", "test.txt", "text/plain", "Mike kicks ass".byteInputStream())
 
 //		when
+        Mockito.`when`(imageService.saveImageFile(anyString(), any(MultipartFile::class.java))).thenReturn(Mono.just(Unit))
+
         mockMvc.perform(multipart("/recipe/1/image/upload").file(file))
                 .andExpect(status().is3xxRedirection)
                 .andExpect(view().name("redirect:/recipe/1/show"))

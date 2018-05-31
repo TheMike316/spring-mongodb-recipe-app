@@ -1,7 +1,7 @@
 package com.miho.springmongodbrecipeapp.services
 
 import com.miho.springmongodbrecipeapp.domain.Recipe
-import com.miho.springmongodbrecipeapp.repositories.RecipeRepository
+import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -13,7 +13,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.springframework.mock.web.MockMultipartFile
-import java.util.*
+import reactor.core.publisher.Mono
 import org.mockito.Mockito.`when` as mockitoWhen
 
 class ImageServiceImplTest {
@@ -21,7 +21,7 @@ class ImageServiceImplTest {
     private lateinit var imageService: ImageService
 
     @Mock
-    private lateinit var recipeRepository: RecipeRepository
+    private lateinit var recipeRepository: RecipeReactiveRepository
 
     @Before
     fun startUp() {
@@ -40,12 +40,12 @@ class ImageServiceImplTest {
         val file = MockMultipartFile("imagefile", "test.txt", "text/plain", "Mike kicks ass".byteInputStream())
         val recipe = Recipe(id = recipeId)
 
-        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe))
-        mockitoWhen(recipeRepository.save(any<Recipe>())).thenReturn(recipe)
+        mockitoWhen(recipeRepository.findById(anyString())).thenReturn(Mono.just(recipe))
+        mockitoWhen(recipeRepository.save(any<Recipe>())).thenReturn(Mono.just(recipe))
         val argumentCaptor = ArgumentCaptor.forClass(Recipe::class.java)
 
 //		when
-        imageService.saveImageFile(recipeId, file)
+        imageService.saveImageFile(recipeId, file).block()
 
 //		then
         verify(recipeRepository, times(1)).findById(anyString())

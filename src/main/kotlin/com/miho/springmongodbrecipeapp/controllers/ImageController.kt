@@ -16,7 +16,7 @@ class ImageController(private val recipeService: RecipeService, private val imag
     @GetMapping("/{recipeId}/image")
     fun getImageForm(@PathVariable recipeId: String, model: Model): String {
 
-        model.addAttribute("recipe", recipeService.findById(recipeId))
+        model.addAttribute("recipe", recipeService.findById(recipeId).block())
 
         return "recipe/imageuploadform"
     }
@@ -24,7 +24,7 @@ class ImageController(private val recipeService: RecipeService, private val imag
     @PostMapping("/{recipeId}/image/upload")
     fun handleImagePost(@PathVariable recipeId: String, @RequestParam("imagefile") file: MultipartFile): String {
 
-        imageService.saveImageFile(recipeId, file)
+        imageService.saveImageFile(recipeId, file).block()
 
         return "redirect:/recipe/$recipeId/show"
     }

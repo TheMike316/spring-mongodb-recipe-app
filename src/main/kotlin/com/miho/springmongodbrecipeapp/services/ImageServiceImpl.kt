@@ -1,28 +1,26 @@
 package com.miho.springmongodbrecipeapp.services
 
-import com.miho.springmongodbrecipeapp.exceptions.NotFoundException
-import com.miho.springmongodbrecipeapp.repositories.RecipeRepository
+import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.Mono
 
 @Service
-class ImageServiceImpl(private val recipeRepository: RecipeRepository) : ImageService {
+class ImageServiceImpl(private val recipeRepository: RecipeReactiveRepository) : ImageService {
 
     @Transactional
-    override fun saveImageFile(recipeId: String, image: MultipartFile?) {
+    override fun saveImageFile(recipeId: String, image: MultipartFile?): Mono<Unit> {
 
         if (image == null)
             throw RuntimeException("Internal Error")
 
-        val recipeOpt = recipeRepository.findById(recipeId)
-
-        if (!recipeOpt.isPresent)
-            throw NotFoundException("Recipe not found")
-
-        recipeOpt.get().image = image.bytes
-
-        recipeRepository.save(recipeOpt.get())
-
+        return recipeRepository.findById(recipeId)
+                .doOnNext {
+                    it.image = image.bytes
+                    recipeRepository.save(it)
+                            .doOnError { throw RuntimeException("Internal Error") }
+                }
+                .thenReturn(Unit)
     }
 }
