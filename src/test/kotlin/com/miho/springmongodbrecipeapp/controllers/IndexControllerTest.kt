@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.view
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.ui.Model
+import reactor.core.publisher.Flux
 
 
 class IndexControllerTest {
@@ -20,17 +21,17 @@ class IndexControllerTest {
     private lateinit var controller: IndexController
 
     @Mock
-    private var model: Model? = null
+    private lateinit var model: Model
 
     @Mock
-    private var service: RecipeService? = null
+    private lateinit var service: RecipeService
 
     @Before
     fun setUp() {
 
         MockitoAnnotations.initMocks(this)
 
-        controller = IndexController(service!!)
+        controller = IndexController(service)
 
     }
 
@@ -48,9 +49,11 @@ class IndexControllerTest {
     @Test
     fun getIndexPage() {
 
-        assertEquals("index", controller.getIndexPage(model!!))
+        org.mockito.Mockito.`when`(service.getAllRecipes()).thenReturn(Flux.empty())
 
-        verify(model, times(1))?.addAttribute(eq("recipes"), anySet<Recipe>())
+        assertEquals("index", controller.getIndexPage(model))
+
+        verify(model, times(1))?.addAttribute(eq("recipes"), any<Flux<Recipe>>())
 
         verify(service, times(1))?.getAllRecipes()
 

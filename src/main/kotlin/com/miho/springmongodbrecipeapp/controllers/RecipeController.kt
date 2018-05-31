@@ -16,7 +16,7 @@ class RecipeController(private val recipeService: RecipeService) {
     @GetMapping("/{id}/show")
     fun showById(@PathVariable id: String, model: Model): String {
 
-        model.addAttribute("recipe", recipeService.findById(id))
+        model.addAttribute("recipe", recipeService.findById(id).block())
 
         return "recipe/show"
     }
@@ -36,7 +36,7 @@ class RecipeController(private val recipeService: RecipeService) {
         if (bindingResult.hasErrors())
             return "recipe/recipeform"
 
-        val savedCommand = recipeService.saveRecipe(recipe)
+        val savedCommand = recipeService.saveRecipe(recipe).block()
 
         return "redirect:/recipe/${savedCommand?.id}/show"
     }
@@ -44,7 +44,7 @@ class RecipeController(private val recipeService: RecipeService) {
     @GetMapping("/{id}/update")
     fun updateRecipe(@PathVariable id: String, model: Model): String {
 
-        model.addAttribute("recipe", recipeService.findById(id))
+        model.addAttribute("recipe", recipeService.findById(id).block())
 
         return "recipe/recipeform"
     }
@@ -52,7 +52,7 @@ class RecipeController(private val recipeService: RecipeService) {
     @GetMapping("/{id}/delete")
     fun deleteRecipe(@PathVariable id: String): String {
 
-        recipeService.deleteById(id)
+        recipeService.deleteById(id).block()
 
         return "redirect:/"
     }

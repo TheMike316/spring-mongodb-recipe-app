@@ -32,7 +32,7 @@ class ImageController(private val recipeService: RecipeService, private val imag
     @GetMapping("/{recipeId}/recipeimage")
     fun renderImageFromDb(@PathVariable recipeId: String, response: HttpServletResponse) {
 
-        val recipeCommand = recipeService.findById(recipeId)
+        val recipeCommand = recipeService.findById(recipeId).block()
 
         response.contentType = "image/jpeg"
 

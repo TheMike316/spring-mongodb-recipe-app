@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import reactor.core.publisher.Mono
 import org.mockito.Mockito.`when` as mockitoWhen
 
 class RecipeControllerTest {
@@ -30,14 +31,14 @@ class RecipeControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @Mock
-    private var service: RecipeService? = null
+    private lateinit var service: RecipeService
 
     @Before
     fun setUp() {
 
         MockitoAnnotations.initMocks(this)
 
-        controller = RecipeController(service!!)
+        controller = RecipeController(service)
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(ControllerExceptionHandler()).build()
@@ -47,13 +48,13 @@ class RecipeControllerTest {
     @Test
     fun testGetRecipe() {
 
-        val recipe = RecipeCommand(id = "1", description = "", prepTime = 0, cookTime = 0, servings = 0,
+        val recipe = Mono.just(RecipeCommand(id = "1", description = "", prepTime = 0, cookTime = 0, servings = 0,
                 source = "", url = "", directions = "", notes = NotesCommand("1", ""), ingredients = emptySet<IngredientCommand>().toMutableSet(),
-                difficulty = Difficulty.EASY, categories = emptySet<CategoryCommand>().toMutableSet())
+                difficulty = Difficulty.EASY, categories = emptySet<CategoryCommand>().toMutableSet()))
 
 
 
-        mockitoWhen(service?.findById(anyString()))?.thenReturn(recipe)
+        mockitoWhen(service.findById(anyString())).thenReturn(recipe)
 
         mockMvc.perform(get("/recipe/1/show")).andExpect(status().isOk).andExpect(view().name("recipe/show"))
 
@@ -63,7 +64,7 @@ class RecipeControllerTest {
     @Test
     fun testGetRecipeNotFound() {
 
-        mockitoWhen(service?.findById(anyString())).thenThrow(NotFoundException::class.java)
+        mockitoWhen(service.findById(anyString())).thenThrow(NotFoundException::class.java)
 
         mockMvc.perform(get("/recipe/4/show"))
                 .andExpect(status().isNotFound)
@@ -83,20 +84,21 @@ class RecipeControllerTest {
     @Test
     fun testPostNewRecipeForm() {
 
-        val command = RecipeCommand(id = "2")
+        val id = "2"
+        val command = Mono.just(RecipeCommand(id = id))
 
-        mockitoWhen(service?.saveRecipe(any<RecipeCommand>())).thenReturn(command)
+        mockitoWhen(service.saveRecipe(any<RecipeCommand>())).thenReturn(command)
 
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", command.id.toString())
+                .param("id", id)
                 .param("description", "assduff")
                 .param("prepTime", "4")
                 .param("cookTime", "30")
                 .param("servings", "4")
                 .param("directions", "asdf"))
                 .andExpect(status().is3xxRedirection)
-                .andExpect(view().name("redirect:/recipe/${command.id}/show"))
+                .andExpect(view().name("redirect:/recipe/$id/show"))
 
 
     }
@@ -104,13 +106,14 @@ class RecipeControllerTest {
     @Test
     fun testPostNewRecipeFormFailValidation() {
 
-        val command = RecipeCommand(id = "2")
+        val id = "2"
+        val command = Mono.just(RecipeCommand(id = id))
 
-        mockitoWhen(service?.saveRecipe(any<RecipeCommand>())).thenReturn(command)
+        mockitoWhen(service.saveRecipe(any<RecipeCommand>())).thenReturn(command)
 
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", command.id.toString())
+                .param("id", id)
                 .param("description", ""))
                 .andExpect(status().isOk)
                 .andExpect(view().name("recipe/recipeform"))
@@ -121,9 +124,9 @@ class RecipeControllerTest {
     @Test
     fun testGetUpdateView() {
 
-        val command = RecipeCommand(id = "2")
+        val command = Mono.just(RecipeCommand(id = "2"))
 
-        mockitoWhen(service?.findById(anyString())).thenReturn(command)
+        mockitoWhen(service.findById(anyString())).thenReturn(command)
 
         mockMvc.perform(get("/recipe/2/update"))
                 .andExpect(status().isOk)
@@ -135,11 +138,13 @@ class RecipeControllerTest {
     @Test
     fun testDeletAction() {
 
+        mockitoWhen(service.deleteById(com.miho.springmongodbrecipeapp.testutils.any())).thenReturn(Mono.empty())
+
         mockMvc.perform(get("/recipe/1/delete"))
                 .andExpect(status().is3xxRedirection)
                 .andExpect(view().name("redirect:/"))
 
-        verify(service, times(1))?.deleteById(anyString())
+        verify(service, times(1)).deleteById(anyString())
     }
 }
 

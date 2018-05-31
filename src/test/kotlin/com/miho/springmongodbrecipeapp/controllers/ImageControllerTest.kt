@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import reactor.core.publisher.Mono
 import org.mockito.Mockito.`when` as mockitoWhen
 
 class ImageControllerTest {
@@ -46,7 +47,7 @@ class ImageControllerTest {
     @Test
     fun testFormGet() {
 //		given
-        val recipeCommand = RecipeCommand(id = "1")
+        val recipeCommand = Mono.just(RecipeCommand(id = "1"))
 
         mockitoWhen(recipeService.findById(anyString())).thenReturn(recipeCommand)
 
@@ -83,7 +84,7 @@ class ImageControllerTest {
 
         val bytes: ByteArray = s.byteInputStream().use { it.readBytes() }
 
-        val recipeCommand = RecipeCommand(id = "1", image = bytes)
+        val recipeCommand = Mono.just(RecipeCommand(id = "1", image = bytes))
 
 
         mockitoWhen(recipeService.findById(anyString())).thenReturn(recipeCommand)

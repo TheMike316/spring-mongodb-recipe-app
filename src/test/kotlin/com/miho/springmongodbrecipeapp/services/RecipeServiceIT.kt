@@ -1,8 +1,7 @@
 package com.miho.springmongodbrecipeapp.services
 
-import com.miho.springmongodbrecipeapp.converters.RecipeCommandToRecipe
 import com.miho.springmongodbrecipeapp.converters.RecipeToRecipeCommand
-import com.miho.springmongodbrecipeapp.repositories.RecipeRepository
+import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -24,10 +23,7 @@ class RecipeServiceIT {
     private lateinit var recipeService: RecipeService
 
     @Autowired
-    private lateinit var recipeRepository: RecipeRepository
-
-    @Autowired
-    private lateinit var commandToRecipe: RecipeCommandToRecipe
+    private lateinit var recipeRepository: RecipeReactiveRepository
 
     @Autowired
     private lateinit var recipeToCommand: RecipeToRecipeCommand
@@ -36,19 +32,19 @@ class RecipeServiceIT {
     @Test
     fun testSaveOfDescription() {
 //		given
-        val testRecipe = recipeRepository.findAll().iterator().next()
+        val testRecipe = recipeRepository.findAll().blockFirst()
         val testRecipeCommand = recipeToCommand.convert(testRecipe)
 
 //		when
         testRecipeCommand?.description = NEW_DESCRIPTION
-        val savedRecipeCommand = recipeService.saveRecipe(testRecipeCommand!!)
+        val savedRecipeCommand = recipeService.saveRecipe(testRecipeCommand!!).block()
 
 //		then
         assertNotNull(savedRecipeCommand)
-        assertEquals(NEW_DESCRIPTION, savedRecipeCommand?.description)
-        assertEquals(testRecipe.id, savedRecipeCommand?.id)
-        assertEquals(testRecipe.categories.size, savedRecipeCommand?.categories?.size)
-        assertEquals(testRecipe.ingredients.size, savedRecipeCommand?.ingredients?.size)
+        assertEquals(NEW_DESCRIPTION, savedRecipeCommand!!.description)
+        assertEquals(testRecipe!!.id, savedRecipeCommand.id)
+        assertEquals(testRecipe.categories.size, savedRecipeCommand.categories?.size)
+        assertEquals(testRecipe.ingredients.size, savedRecipeCommand.ingredients?.size)
 
     }
 }

@@ -53,7 +53,7 @@ class IngredientControllerTest {
     @Test
     fun testListIngredients() {
 //		given
-        val recipeCommand = RecipeCommand()
+        val recipeCommand = Mono.empty<RecipeCommand>()
         mockitoWhen(recipeService.findById(anyString())).thenReturn(recipeCommand)
 
 //		when
@@ -127,7 +127,7 @@ class IngredientControllerTest {
     fun testNewIngredientForm() {
 
 //		given
-        val recipeCommand = RecipeCommand(id = "1")
+        val recipeCommand = Mono.just(RecipeCommand(id = "1"))
 
 //		when
         mockitoWhen(recipeService.findById(anyString())).thenReturn(recipeCommand)

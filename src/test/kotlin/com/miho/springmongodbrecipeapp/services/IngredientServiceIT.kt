@@ -53,7 +53,7 @@ class IngredientServiceIT {
 //		when
         ingredientCommand?.description = NEW_DESCRIPTION
         val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(ingredientCommand!!, recipe.id).block()!!
-        val recipeCommandAfterUpdate = recipeService.findById(recipe.id)
+        val recipeCommandAfterUpdate = recipeService.findById(recipe.id).block()
 
         //		then
         assertNotNull(savedIngredientCommand)
@@ -79,12 +79,12 @@ class IngredientServiceIT {
 
 //		given
         val uom = uomService.listAllUoms().blockFirst()
-        val recipe = recipeService.getAllRecipes().iterator().next()
+        val recipe = recipeService.getAllRecipes().blockFirst()
         val newIngredientCommand = IngredientCommand(description = "new ingredient", unitOfMeasure = uom, amount = BigDecimal.ONE)
 
 //		when
-        val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(newIngredientCommand, recipe.id).block()!!
-        val recipeCommand = recipeService.findById(recipe.id)
+        val savedIngredientCommand = ingredientService.saveOrUpdateIngredient(newIngredientCommand, recipe!!.id).block()!!
+        val recipeCommand = recipeService.findById(recipe.id).block()
 
 
 //		then
@@ -102,8 +102,8 @@ class IngredientServiceIT {
     fun testDeleteIngredientHappyPath() {
 
 //		given
-        val recipe = recipeService.getAllRecipes().iterator().next()
-        val ingredient = recipe.ingredients.iterator().next()
+        val recipe = recipeService.getAllRecipes().blockFirst()
+        val ingredient = recipe!!.ingredients.iterator().next()
         val recipeId = recipe.id
         val ingredientId = ingredient.id
 
@@ -127,8 +127,8 @@ class IngredientServiceIT {
     fun testDeleteIngredientInvalidIngredientId() {
 
 //		given
-        val recipe = recipeService.getAllRecipes().iterator().next()
-        val recipeId = recipe.id
+        val recipe = recipeService.getAllRecipes().blockFirst()
+        val recipeId = recipe!!.id
         val ingredientId = "asdf"
 
 //		when
