@@ -2,9 +2,7 @@ package com.miho.springmongodbrecipeapp.domain
 
 import org.springframework.data.annotation.Id
 
-class Notes(/*var recipe: Recipe? = null,*/
+class Notes(var recipeNotes: String = "",
 
-        var recipeNotes: String = "",
-
-        @field: Id
-        var id: String = "")
+            @field: Id
+            var id: String = "")

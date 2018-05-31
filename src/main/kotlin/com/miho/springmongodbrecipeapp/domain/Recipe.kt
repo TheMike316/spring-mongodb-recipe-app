@@ -1,7 +1,6 @@
 package com.miho.springmongodbrecipeapp.domain
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
@@ -27,7 +26,6 @@ class Recipe(var description: String = "",
 
              var difficulty: Difficulty = Difficulty.EASY,
 
-             @DBRef
              val categories: MutableSet<Category> = mutableSetOf(),
 
              @field: Id
@@ -48,24 +46,13 @@ class Recipe(var description: String = "",
 
     fun addIngredient(ingredient: Ingredient) {
 
-//        ingredient.recipe = this
-
         this.ingredients.add(ingredient)
 
     }
 
     fun addIngredients(ingredients: Iterable<Ingredient>) = ingredients.forEach(this::addIngredient)
 
-    fun removeIngredient(ingredient: Ingredient): Boolean {
-
-        return ingredients.remove(ingredient)
-
-//        if (result)
-//            ingredient.recipe = null
-
-//            return result
-
-    }
+    fun removeIngredient(ingredient: Ingredient) = ingredients.remove(ingredient)
 
     fun addCategory(category: Category) = categories.add(category)
 
