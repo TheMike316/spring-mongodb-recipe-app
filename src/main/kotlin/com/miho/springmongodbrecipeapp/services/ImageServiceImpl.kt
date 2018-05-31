@@ -2,14 +2,12 @@ package com.miho.springmongodbrecipeapp.services
 
 import com.miho.springmongodbrecipeapp.repositories.reactive.RecipeReactiveRepository
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Mono
 
 @Service
 class ImageServiceImpl(private val recipeRepository: RecipeReactiveRepository) : ImageService {
 
-    @Transactional
     override fun saveImageFile(recipeId: String, image: MultipartFile?): Mono<Unit> {
 
         if (image == null)
