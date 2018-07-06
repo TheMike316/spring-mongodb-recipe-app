@@ -20,14 +20,4 @@ class ControllerExceptionHandler {
         return "404error"
 
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NumberFormatException::class)
-    fun handleNumberFormatException(e: Exception, model: Model): String {
-
-        model.addAttribute("exception", e)
-
-        return "400error"
-
-    }
 }
