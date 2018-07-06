@@ -44,7 +44,7 @@ class RecipeController(private val recipeService: RecipeService) {
     @GetMapping("/{id}/update")
     fun updateRecipe(@PathVariable id: String, model: Model): String {
 
-        model.addAttribute("recipe", recipeService.findById(id).block())
+        model.addAttribute("recipe", recipeService.findById(id))
 
         return "recipe/recipeform"
     }
