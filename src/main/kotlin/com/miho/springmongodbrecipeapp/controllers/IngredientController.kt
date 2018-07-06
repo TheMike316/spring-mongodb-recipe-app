@@ -44,7 +44,7 @@ class IngredientController(private val recipeService: RecipeService,
     @GetMapping("/{recipeId}/ingredient/new")
     fun newIngredient(@PathVariable recipeId: String, model: Model): String {
 
-        val recipeCommand = recipeService.findById(recipeId).block()
+        val recipeCommand = recipeService.findById(recipeId)
 //		TODO raise Exception if null
 
         if (recipeCommand != null)

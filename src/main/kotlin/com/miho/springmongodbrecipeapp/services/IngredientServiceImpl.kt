@@ -15,7 +15,7 @@ class IngredientServiceImpl(private val recipeRepository: RecipeReactiveReposito
     override fun findByRecipeIdAndIngredientId(recipeId: String, ingredientId: String): Mono<IngredientCommand> {
         return recipeRepository.findById(recipeId)
                 .map { it.ingredients.find { i -> ingredientId == i.id } }
-                .map { ingredientToCommand.convert(it) ?: throw  RuntimeException("ingredient was not found") }
+                .map { ingredientToCommand.convertAndAddRecipeId(it, recipeId) ?: throw  RuntimeException("ingredient was not found") }
     }
 
     override fun saveOrUpdateIngredient(ingredientCommand: IngredientCommand, recipeId: String): Mono<IngredientCommand> {
@@ -29,7 +29,7 @@ class IngredientServiceImpl(private val recipeRepository: RecipeReactiveReposito
                     recipeRepository.save(it).block()
                 }
                 .map { it.ingredients.find { i -> ingredient.id == i.id } }
-                .map { ingredientToCommand.convert(it) ?: throw RuntimeException("Internal Error!") }
+                .map { ingredientToCommand.convertAndAddRecipeId(it, recipeId) ?: throw RuntimeException("Internal Error!") }
     }
 
     //TODO error handling when recipe could not be found
