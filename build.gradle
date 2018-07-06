@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.31'
+        kotlinVersion = '1.2.51'
         springBootVersion = '2.0.1.RELEASE'
     }
     repositories {
@@ -49,6 +49,7 @@ dependencies {
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile('org.webjars:bootstrap:3.3.7-1')
     runtime('org.springframework.boot:spring-boot-devtools')
     compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
     testCompile('org.springframework.boot:spring-boot-starter-test')

@@ -35,8 +35,7 @@ class IngredientController(private val recipeService: RecipeService,
 
         model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId))
 
-        //We will refactor our thymeleaf views to make the app end-to-end reactive later
-        model.addAttribute("uomList", uomService.listAllUoms().collectList().block())
+        model.addAttribute("uomList", uomService.listAllUoms())
 
         return "recipe/ingredient/ingredientform"
 
@@ -51,8 +50,7 @@ class IngredientController(private val recipeService: RecipeService,
         if (recipeCommand != null)
             model.addAttribute("ingredient", IngredientCommand(unitOfMeasure = UnitOfMeasureCommand()))
 
-        //We will refactor our thymeleaf views to make the app end-to-end reactive later
-        model.addAttribute("uomList", uomService.listAllUoms().collectList().block())
+        model.addAttribute("uomList", uomService.listAllUoms())
 
         return "recipe/ingredient/ingredientform"
 
